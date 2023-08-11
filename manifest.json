@@ -11,7 +11,9 @@
   },
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "declarativeNetRequestWithHostAccess"
+  ],
   ],
   "commands": {
     "_execute_action": {
