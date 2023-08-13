@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://term.ptt4.cc/"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "wss://ws.ptt.cc/bbs",
+      "domains": [
+        "term.ptt.cc"
+      ]
+    }
+  }
+]

@@ -53,6 +53,6 @@ async function removeAllRules() {
     const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
     chrome.declarativeNetRequest.updateDynamicRules(
         {removeRuleIds: oldRules.map(e => e.id)},
-        () => console.log("block rule added");
+        () => console.log("block rule added")
     );
 }

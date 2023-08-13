@@ -12,9 +12,34 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "declarativeNetRequestFeedback"
   ],
+  "host_permissions": [
+    "https://developer.chrome.com/*",
+    "https://term.ptt.cc/"
   ],
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "https://developer.chrome.com/*",
+        "https://developer.chrome.com/docs/*"
+      ]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules_1.json"
+      }
+    ]
+  },
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -22,5 +47,8 @@
         "mac": "Command+B"
       }
     }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
   }
 }

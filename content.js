@@ -1,0 +1,1 @@
+new WebSocket('wss://ws.ptt.cc/bbs')
