@@ -12,9 +12,6 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "declarativeNetRequestFeedback"
   ],
   "host_permissions": [
     "https://developer.chrome.com/*",
@@ -27,19 +24,10 @@
       ],
       "matches": [
         "https://developer.chrome.com/*",
-        "https://developer.chrome.com/docs/*"
+        "https://term.ptt.cc/"
       ]
     }
   ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules_1.json"
-      }
-    ]
-  },
   "commands": {
     "_execute_action": {
       "suggested_key": {
