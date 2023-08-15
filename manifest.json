@@ -11,7 +11,7 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
+    "scripting"
   ],
   "host_permissions": [
     "https://developer.chrome.com/*",
@@ -20,11 +20,29 @@
   "content_scripts": [
     {
       "js": [
+        "ptt.js"
+      ],
+      "matches": [
+        "https://term.ptt.cc/*"
+      ]
+    },
+    {
+      "js": [
         "content.js"
       ],
       "matches": [
-        "https://developer.chrome.com/*",
-        "https://term.ptt.cc/"
+        "https://www.youtube.com/*"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "https://term.ptt.cc/*"
+      ],
+      "resources": [
+        "wasm_exec.js",
+        "ptt.wasm"
       ]
     }
   ],
