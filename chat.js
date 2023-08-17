@@ -2,6 +2,7 @@
     let chat;
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
+            console.log(request)
             const {type, data} = request;
             if (type === 'START') {
                 const chatContainer = document.querySelector('#chat-container')
@@ -31,8 +32,13 @@
                     }
                     chat.lastElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'})
                 }
+            } else {
+                console.log(type, data)
             }
         }
     );
 
+    const videoContainer = document.querySelector('.html5-video-container')
+
+    // const chatContainer = document.querySelector('#chat-messages #contents')
 })();

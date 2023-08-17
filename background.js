@@ -52,6 +52,12 @@ async function getCurrentTab() {
 async function startExtension() {
     const tab = await getCurrentTab();
     chatTab = tab.id;
+
+    await chrome.scripting.executeScript({
+        target: {tabId: chatTab},
+        files: ['chat.js']
+    });
+
     if (pttTab && chatTab) {
         await chrome.tabs.sendMessage(chatTab, {type: 'START'});
         await chrome.tabs.sendMessage(pttTab, {type: 'START'});

@@ -25,14 +25,6 @@
       "matches": [
         "https://term.ptt.cc/*"
       ]
-    },
-    {
-      "js": [
-        "content.js"
-      ],
-      "matches": [
-        "https://www.youtube.com/*"
-      ]
     }
   ],
   "web_accessible_resources": [
