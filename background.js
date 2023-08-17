@@ -30,10 +30,11 @@ let pttTab
 let chatTab
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-    console.log(sender.tab, request)
+    console.log(request)
     const {type} = request
-    if (type === 'PTT') pttTab = sender.tab.id;
-    else if (type === 'MSG' && chatTab) {
+    if (type === 'PTT' && sender.tab.id === pttTab) {
+        await chrome.tabs.sendMessage(pttTab, {type: 'START'});
+    } else if (type === 'MSG' && chatTab) {
         try {
             await chrome.tabs.sendMessage(chatTab, request);
         } catch (e) {
@@ -50,27 +51,41 @@ async function getCurrentTab() {
 }
 
 async function startExtension() {
+    const t = await chrome.tabs.create({
+        url: "https://term.ptt.cc/",
+        active: false,
+    });
+    pttTab = t.id
+
     const tab = await getCurrentTab();
     chatTab = tab.id;
 
     await chrome.scripting.executeScript({
         target: {tabId: chatTab},
-        files: ['chat.js']
+        files: ['chat.js'],
     });
 
-    if (pttTab && chatTab) {
+    await chrome.scripting.insertCSS({
+        files: ['chat.css'],
+        target: {tabId: chatTab}
+    });
+
+    if (chatTab) {
         await chrome.tabs.sendMessage(chatTab, {type: 'START'});
-        await chrome.tabs.sendMessage(pttTab, {type: 'START'});
         setStatus('ON');
     }
 }
 
-function stopExtension() {
+async function stopExtension() {
     if (pttTab) {
-        chrome.tabs.sendMessage(pttTab, {type: 'STOP'}).catch(e => console.log(e))
+        chrome.tabs.remove(pttTab);
     }
     if (chatTab) {
         chrome.tabs.sendMessage(chatTab, {type: 'STOP'}).catch(e => console.log(e))
+        await chrome.scripting.removeCSS({
+            files: ['chat.css'],
+            target: {tabId: chatTab}
+        });
     }
     setStatus('OFF');
 }
