@@ -1,14 +1,21 @@
 (async () => {
     let intervalId
     chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
+        function (request, sender, sendResponse) {
             console.log(request)
             const {type} = request
             if (type === 'START') {
-                intervalId = setInterval(()=>{
-                    chrome.runtime.sendMessage({type: "MSG", data: "wwww"});
+                let i = 1;
+                intervalId = setInterval(() => {
+                    chrome.runtime.sendMessage({
+                        type: "MSG", data: JSON.stringify([
+                            {user: 'u1', time: 'time', message: `message${i++}`},
+                            {user: 'u1', time: 'time', message: `message${i++}`},
+                        ])
+                    });
                 }, 1000)
-            }else if (type === 'STOP'){
+                // pollingMessages("account", "password", true, "C_Chat", "#1asqyVwN", sendPushes)
+            } else if (type === 'STOP') {
                 clearInterval(intervalId)
             }
         }
@@ -16,7 +23,7 @@
 
     chrome.runtime.sendMessage({type: "PTT"});
 
-    function sendPushes (pushes) {
+    function sendPushes(pushes) {
         chrome.runtime.sendMessage({type: "MSG", data: pushes});
     }
 
@@ -26,7 +33,5 @@
     const go = new Go();
     WebAssembly.instantiateStreaming(fetch(chrome.runtime.getURL("ptt.wasm")), go.importObject).then(result => {
         go.run(result.instance)
-
-        pollingMessages("account", "password", true, "C_Chat", "#1asqyVwN", sendPushes)
     })
 })();
