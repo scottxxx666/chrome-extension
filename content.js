@@ -1,6 +1,5 @@
 (async () => {
     let chat;
-    let count = 0;
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
             const {type, data} = request;
@@ -16,18 +15,17 @@
                 chat.style.height = '100px';
                 chat.style.overflowY = 'scroll';
                 chatContainer.appendChild(chat);
-            } else {
+            } else if (type === 'MSG') {
                 const msgs = JSON.parse(data);
+                const msgCount = chat.childElementCount
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     const m = msgs[i]
                     const div = document.createElement('div');
                     div.appendChild(document.createTextNode(`${m.user}: ${m.message} ${m.time}`))
                     chat.appendChild(div)
                     div.scrollIntoView({block: 'nearest', inline: 'nearest'})
-                    count++;
-                    while (count > 15) {
+                    for (let j = msgCount; j > 15; j--) {
                         chat.removeChild(chat.firstChild);
-                        count--;
                     }
                 }
             }
