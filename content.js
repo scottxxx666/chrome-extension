@@ -18,15 +18,18 @@
             } else if (type === 'MSG') {
                 const msgs = JSON.parse(data);
                 const msgCount = chat.childElementCount
+                const frag = document.createDocumentFragment();
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     const m = msgs[i]
                     const div = document.createElement('div');
                     div.appendChild(document.createTextNode(`${m.user}: ${m.message} ${m.time}`))
-                    chat.appendChild(div)
-                    div.scrollIntoView({block: 'nearest', inline: 'nearest'})
+                    frag.appendChild(div)
+                    chat.appendChild(frag)
+
                     for (let j = msgCount; j > 15; j--) {
                         chat.removeChild(chat.firstChild);
                     }
+                    chat.lastElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'})
                 }
             }
         }
