@@ -33,7 +33,6 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     console.log(sender.tab, request)
     const {type} = request
     if (type === 'PTT') pttTab = sender.tab.id;
-    else if (type === 'CHAT') chatTab = sender.tab.id;
     else if (type === 'MSG' && chatTab) {
         try {
             await chrome.tabs.sendMessage(chatTab, request);
@@ -45,7 +44,14 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     }
 });
 
+async function getCurrentTab() {
+    let [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+    return tab;
+}
+
 async function startExtension() {
+    const tab = await getCurrentTab();
+    chatTab = tab.id;
     if (pttTab && chatTab) {
         await chrome.tabs.sendMessage(chatTab, {type: 'START'});
         await chrome.tabs.sendMessage(pttTab, {type: 'START'});

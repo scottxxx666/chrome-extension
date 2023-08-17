@@ -35,5 +35,4 @@
         }
     );
 
-    chrome.runtime.sendMessage({type: "CHAT"});
 })();
