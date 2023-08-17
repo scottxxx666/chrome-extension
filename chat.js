@@ -1,44 +1,53 @@
 (async () => {
     let chat;
-    chrome.runtime.onMessage.addListener(
-        function (request, sender, sendResponse) {
-            console.log(request)
-            const {type, data} = request;
-            if (type === 'START') {
-                const chatContainer = document.querySelector('#chat-container')
-                let child = chatContainer.lastElementChild;
-                while (child) {
-                    chatContainer.removeChild(child);
-                    child = chatContainer.lastElementChild;
-                }
-                chat = document.createElement('div');
-                chat.style.background = 'white';
-                chat.style.height = '100px';
-                chat.style.overflowY = 'scroll';
-                chatContainer.appendChild(chat);
-            } else if (type === 'MSG') {
-                const msgs = JSON.parse(data);
-                const msgCount = chat.childElementCount
-                const frag = document.createDocumentFragment();
-                for (let i = msgs.length - 1; i >= 0; i--) {
-                    const m = msgs[i]
-                    const div = document.createElement('div');
-                    div.appendChild(document.createTextNode(`${m.user}: ${m.message} ${m.time}`))
-                    frag.appendChild(div)
-                    chat.appendChild(frag)
+    const body = document.querySelector('body');
 
-                    for (let j = msgCount; j > 15; j--) {
-                        chat.removeChild(chat.firstChild);
-                    }
-                    chat.lastElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'})
-                }
-            } else {
-                console.log(type, data)
-            }
+    const chatContainer = document.createElement('div');
+    chatContainer.id = 'ptt-chat-container'
+    body.appendChild(chatContainer)
+    chrome.runtime.onMessage.addListener(messageListener);
+
+    function removeChat() {
+        const prev = body.querySelector('#ptt-chat-container');
+        if (prev) {
+            body.removeChild(prev);
         }
-    );
+        return prev;
+    }
 
-    const videoContainer = document.querySelector('.html5-video-container')
+    function messageListener(request, sender, sendResponse) {
+        console.log(request)
+        const {type, data} = request;
+        if (type === 'START') {
+            let child = chatContainer.lastElementChild;
+            while (child) {
+                chatContainer.removeChild(child);
+                child = chatContainer.lastElementChild;
+            }
+            chat = document.createElement('div');
+            chat.id = 'ptt-chat';
+            chatContainer.appendChild(chat);
+        } else if (type === 'MSG') {
+            const msgs = JSON.parse(data);
+            const frag = document.createDocumentFragment();
+            for (let i = msgs.length - 1; i >= 0; i--) {
+                const m = msgs[i]
+                const div = document.createElement('div');
+                div.appendChild(document.createTextNode(`${m.user}: ${m.message}`))
+                frag.appendChild(div)
+                chat.appendChild(frag)
 
-    // const chatContainer = document.querySelector('#chat-messages #contents')
+                chat.lastElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'})
+            }
+            const msgCount = chat.childElementCount
+            for (let j = msgCount; j > 15; j--) {
+                chat.removeChild(chat.firstChild);
+            }
+        } else if (type === 'STOP') {
+            chrome.runtime.onMessage.removeListener(messageListener)
+            removeChat();
+        } else {
+            console.log(type, data)
+        }
+    }
 })();
