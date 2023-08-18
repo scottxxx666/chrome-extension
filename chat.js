@@ -1,32 +1,49 @@
 (async () => {
     let chat;
     const body = document.querySelector('body');
+    let chatWindow;
 
-    const chatContainer = document.createElement('div');
-    chatContainer.id = 'ptt-chat-container'
-    body.appendChild(chatContainer)
     chrome.runtime.onMessage.addListener(messageListener);
 
     function removeChat() {
-        const prev = body.querySelector('#ptt-chat-container');
-        if (prev) {
-            body.removeChild(prev);
-        }
-        return prev;
+        if (chatWindow) chatWindow.remove();
+    }
+
+    function createChat() {
+        chatWindow = document.createElement('div');
+        chatWindow.id = 'ptt-chat-window';
+
+        const header = document.createElement('div');
+        header.id = 'ptt-chat-header';
+        const transparentBtn = document.createElement('button')
+        transparentBtn.addEventListener('click', handleTransparent)
+        transparentBtn.textContent = '透明'
+        header.appendChild(transparentBtn);
+        chatWindow.appendChild(header);
+
+        const chatContainer = document.createElement('div');
+        chatContainer.id = 'ptt-chat-container';
+        chatWindow.appendChild(chatContainer);
+
+        chat = document.createElement('div');
+        chat.id = 'ptt-chat';
+        chatContainer.appendChild(chat)
+
+        const footer = document.createElement('div');
+        footer.id = 'ptt-chat-footer';
+        const input = document.createElement('input');
+        footer.id = 'push-message';
+        footer.appendChild(input);
+        chatWindow.appendChild(footer);
+
+        body.appendChild(chatWindow);
     }
 
     function messageListener(request, sender, sendResponse) {
         console.log(request)
         const {type, data} = request;
         if (type === 'START') {
-            let child = chatContainer.lastElementChild;
-            while (child) {
-                chatContainer.removeChild(child);
-                child = chatContainer.lastElementChild;
-            }
-            chat = document.createElement('div');
-            chat.id = 'ptt-chat';
-            chatContainer.appendChild(chat);
+            createChat();
         } else if (type === 'MSG') {
             const msgs = JSON.parse(data);
             const frag = document.createDocumentFragment();
@@ -40,7 +57,7 @@
                 chat.lastElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'})
             }
             const msgCount = chat.childElementCount
-            for (let j = msgCount; j > 15; j--) {
+            for (let j = msgCount; j > 100; j--) {
                 chat.removeChild(chat.firstChild);
             }
         } else if (type === 'STOP') {
@@ -49,5 +66,9 @@
         } else {
             console.log(type, data)
         }
+    }
+
+    function handleTransparent() {
+        chatWindow.classList.toggle('transparent')
     }
 })();
