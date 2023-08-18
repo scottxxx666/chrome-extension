@@ -50,7 +50,14 @@
             for (let i = msgs.length - 1; i >= 0; i--) {
                 const m = msgs[i]
                 const div = document.createElement('div');
-                div.appendChild(document.createTextNode(`${m.user}: ${m.message}`))
+                const user = document.createElement('span');
+                user.classList.add('account');
+                user.textContent = `${m.user}：`;
+                div.appendChild(user);
+                const message = document.createElement('span');
+                message.classList.add('message');
+                message.textContent = m.message;
+                div.appendChild(message)
                 frag.appendChild(div)
                 chat.appendChild(frag)
 

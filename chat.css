@@ -6,7 +6,8 @@
     right: 4px;
     bottom: 10%;
     z-index: 2147483647;
-    background-color: #666;
+    background-color: #18181b;
+    /*background-color: white;*/
     border-radius: 16px;
     padding: 4px 4px 12px;
     display: flex;
@@ -47,4 +48,18 @@
     height: 100%;
     color: white;
     font-size: 14px;
+}
+
+#ptt-chat .row {
+    display: flex;
+}
+
+#ptt-chat .account {
+    color: #2ba640;
+}
+
+#ptt-chat .message {
+    color: #dedee3;
+    /*color: #010110;*/
+    /*color: #1f1f23;*/
 }
