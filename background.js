@@ -12,19 +12,6 @@ async function setStatus(nextState) {
     });
 }
 
-chrome.action.onClicked.addListener(async (tab) => {
-    // Retrieve the action badge to check if the extension is 'ON' or 'OFF'
-    const prevState = await chrome.action.getBadgeText({});
-    // const prevState = await chrome.action.getBadgeText({tabId: tab.id});
-    // Next state will always be the opposite
-    const nextState = prevState === 'ON' ? 'OFF' : 'ON'
-
-    if (nextState === "ON") {
-        startExtension();
-    } else if (nextState === "OFF") {
-        stopExtension();
-    }
-})
 
 let pttTab
 let chatTab
@@ -42,6 +29,14 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
             stopExtension();
             chatTab = null
         }
+    }else if (type === 'OPEN') {
+        // startExtension();
+        await setStatus('ON');
+        sendResponse('ON');
+    }else if (type === 'CLOSE') {
+        // startExtension();
+        await setStatus('OFF');
+        sendResponse('OFF');
     }
 });
 
